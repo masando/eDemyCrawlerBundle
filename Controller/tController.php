@@ -30,38 +30,38 @@ class tController extends BaseController
     public function getTCrawler($city, $fecha = null) 
     {
         switch($city) {
-            case __CITY__:
+            case '__CITY__':
                 $this->url = '';
                 break;
-            case __CITY2__:
+            case '__CITY2__':
                 $this->url = '';
                 break;
         }
         $this->client = new Client();
         $crawler = $this->follow($this->url);
-        $pred_crawler = $crawler->filter(__FILTER__);
+        $pred_crawler = $crawler->filter('__FILTER__');
         return $pred_crawler;
     }
 
-    public function getPP($city = __CITY__, $fecha = null) 
+    public function getPP($city = '__CITY__', $fecha = null)
     {
 
-        return $this->getTCrawler($city, $fecha)->filter(__FILTER2__)->text();
+        return $this->getTCrawler($city, $fecha)->filter('__FILTER2__')->text();
     }
 
-    public function getEC($city = __CITY__, $fecha = null) 
+    public function getEC($city = '__CITY__', $fecha = null)
     {
 
-        return $this->getTCrawler($city, $fecha)->filter(__FILTER3__)->attr("descripcion");
+        return $this->getTCrawler($city, $fecha)->filter('__FILTER3__')->attr("descripcion");
     }
 
-    public function getMax($city = __CITY__, $fecha = null) 
+    public function getMax($city = '__CITY__', $fecha = null)
     {
 
         return $this->getTCrawler($city, $fecha)->filter('max')->text();
     }
 
-    public function getMin($city = __CITY__, $fecha = null) 
+    public function getMin($city = '__CITY__', $fecha = null)
     {
 
         return $this->getTCrawler($city, $fecha)->filter('min')->text();

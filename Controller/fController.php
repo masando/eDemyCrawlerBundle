@@ -39,7 +39,7 @@ class fController extends BaseController
         }
     }
 
-    public function getFs($ciudad = __CITY__, $todas = false, $ayer = false, $hoy = true, $mañana = false, $todos = false) {
+    public function getFs($ciudad = '__CITY__', $todas = false, $ayer = false, $hoy = true, $mañana = false, $todos = false) {
         $ciudad = strtolower($ciudad);
         $fs = array();
         if($ayer) $a = new \DateTime('yesterday');

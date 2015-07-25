@@ -26,7 +26,7 @@ class fCommand extends ContainerAwareCommand
             ->addOption('m', null, InputOption::VALUE_NONE, 'mañana')
             ->addOption('todos', null, InputOption::VALUE_NONE, 'todos los días')
             ->addOption('todas', null, InputOption::VALUE_NONE, 'todas las ciudades')
-            ->addOption('ciudad', null, InputOption::VALUE_REQUIRED, 'ciudad', __CITY__)
+            ->addOption('ciudad', null, InputOption::VALUE_REQUIRED, 'ciudad', '__CITY__')
         ;
     }
 

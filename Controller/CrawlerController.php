@@ -27,20 +27,20 @@ class CrawlerController extends BaseController
         {
             $hoy = $this->SpanishDate((new \DateTime('now'))->getTimeStamp());
             $f = $this->get('edemy.f_crawler')->getFs()[0];
-            $mensaje = __MSG1__;
+            $mensaje = '__MSG1__';
             $mensaje .= "\n" . $f['f'] . " en " .  $f['direccion'];
-            $f = $this->get('edemy.f_crawler')->getFs(__CITY__)[0];
-            $mensaje .= __MSG2__;
+            $f = $this->get('edemy.f_crawler')->getFs('__CITY__')[0];
+            $mensaje .= '__MSG2__';
             $mensaje .= "\n" . $f['f'] . " en " . $f['direccion'];
             $fecha = (new \DateTime('now'))->format('Y-m-d');
             $tCrawler = $this->get('edemy.t_crawler');
-            $pp = $tCrawler->getPP(__CITY__, $fecha);
-            $mensaje .= __MSG3__;
-            $ec = $tCrawler->getEC(__CITY__, $fecha);
+            $pp = $tCrawler->getPP('__CITY__', $fecha);
+            $mensaje .= '__MSG3__';
+            $ec = $tCrawler->getEC('__CITY__', $fecha);
             $mensaje .= "\nEC: " . $ec;
-            $min = $tCrawler->getMin(__CITY__, $fecha);
-            $max = $tCrawler->getMax(__CITY__, $fecha);
-            $mensaje .= __MSG4__;
+            $min = $tCrawler->getMin('__CITY__', $fecha);
+            $max = $tCrawler->getMax('__CITY__', $fecha);
+            $mensaje .= '__MSG4__';
 
             $imagick = new \Imagick();
             $imagick->setResourceLimit(\Imagick::RESOURCETYPE_MEMORY, 8);
@@ -54,7 +54,7 @@ class CrawlerController extends BaseController
             $imagick->drawImage($text);
 
 
-            $logo = new \Imagick(__LOGO__);
+            $logo = new \Imagick('__LOGO__');
             $imagick->addImage($logo);
             $imagick = $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_COMPOSITE);
         } catch(Exception $e) {
