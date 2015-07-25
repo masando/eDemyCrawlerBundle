@@ -1,0 +1,22 @@
+{
+  "name" : "edemy/crawlerbundle",
+  "description" : "Crawler Bundle for eDemy Framework",
+  "type" : "symfony-bundle",
+  "authors" : [{
+    "name" : "Manuel Sanchís",
+    "email" : "msanchis@edemy.es"
+  }],
+  "keywords" : [
+    "edemy crawler bundle"
+  ],
+  "license" : [
+    "GNU v2"
+  ],
+  "require" : {
+    "edemy/mainbundle": "*"
+  },
+  "autoload" : {
+    "psr-0" : { "eDemy\\CrawlerBundle" : "" }
+  },
+  "target-dir": "eDemy/CrawlerBundle"
+}
