@@ -1,20 +1,20 @@
 services:
     edemy.crawler:
-        class: "eDemy\CrawlerBundle\Controller\CrawlerController"
+        class: eDemy\CrawlerBundle\Controller\CrawlerController
         calls:
             - [setEventDispatcher, ["@event_dispatcher"]]
         tags:
             - { name: kernel.event_subscriber }
 
     edemy.t_crawler:
-        class: "eDemy\CrawlerBundle\Controller\tController"
+        class: eDemy\CrawlerBundle\Controller\\tController
         calls:
             - [setEventDispatcher, ["@event_dispatcher"]]
         tags:
             - { name: kernel.event_subscriber }
 
     edemy.f_crawler:
-        class: "eDemy\CrawlerBundle\Controller\fController"
+        class: eDemy\CrawlerBundle\Controller\\fController
         calls:
             - [setEventDispatcher, ["@event_dispatcher"]]
         tags:
