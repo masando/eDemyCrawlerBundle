@@ -13,7 +13,8 @@
     "GNU v2"
   ],
   "require" : {
-    "edemy/mainbundle": "*"
+    "edemy/mainbundle": "*",
+    "guzzlehttp/guzzle": "*"
   },
   "autoload" : {
     "psr-0" : { "eDemy\\CrawlerBundle" : "" }
