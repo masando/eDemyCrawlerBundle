@@ -19,7 +19,11 @@ class fController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->file = '';
+    }
+
+    public function load($file)
+    {
+        $this->file = $file;
         $this->todasFs = array();
         
         if (($handle = fopen($this->file, "r")) !== FALSE) {
@@ -39,61 +43,70 @@ class fController extends BaseController
         }
     }
 
-    public function getFs($ciudad = '__CITY__', $todas = false, $ayer = false, $hoy = true, $mañana = false, $todos = false) {
-        $ciudad = strtolower($ciudad);
-        $fs = array();
-        if($ayer) $a = new \DateTime('yesterday');
-        if($hoy) $h = new \DateTime('now');
-        if($mañana) $m = new \DateTime('tomorrow');
+    public function getFs($ciudad = false, $todas = false, $ayer = false, $hoy = true, $mañana = false, $todos = false)
+    {
+        if($ciudad) {
+            $ciudad = strtolower($ciudad);
+            $fs = array();
+            if ($ayer) {
+                $a = new \DateTime('yesterday');
+            }
+            if ($hoy) {
+                $h = new \DateTime('now');
+            }
+            if ($mañana) {
+                $m = new \DateTime('tomorrow');
+            }
 
-        foreach($this->todasFs as $f) {
-            if(count($f) == 4) {
-                if($todas) {
-                    if($todos) {
-                        $fs[] = $f;
-                    } else {
-                        if($ayer) {
-                            if($f['fecha'] == $a->format('d/m/y')) {
-                                $fs[] = $f;
-                            }
-                        }
-                        if($hoy) {
-                            if($f['fecha'] == $h->format('d/m/y')) {
-                                $fs[] = $f;
-                            }
-                        }
-                        if($mañana) {
-                            if($f['fecha'] == $m->format('d/m/y')) {
-                                $fs[] = $f;
-                            }
-                        }
-                    }
-                } else {
-                    if($f['ciudad'] == $ciudad) {
-                        if($todos) {
+            foreach ($this->todasFs as $f) {
+                if (count($f) == 4) {
+                    if ($todas) {
+                        if ($todos) {
                             $fs[] = $f;
                         } else {
-                            if($ayer) {
-                                if($f['fecha'] == $a->format('d/m/y')) {
+                            if ($ayer) {
+                                if ($f['fecha'] == $a->format('d/m/y')) {
                                     $fs[] = $f;
                                 }
                             }
-                            if($hoy) {
-                                if($f['fecha'] == $h->format('d/m/y')) {
+                            if ($hoy) {
+                                if ($f['fecha'] == $h->format('d/m/y')) {
                                     $fs[] = $f;
                                 }
                             }
-                            if($mañana) {
-                                if($f['fecha'] == $m->format('d/m/y')) {
+                            if ($mañana) {
+                                if ($f['fecha'] == $m->format('d/m/y')) {
                                     $fs[] = $f;
+                                }
+                            }
+                        }
+                    } else {
+                        if ($f['ciudad'] == $ciudad) {
+                            if ($todos) {
+                                $fs[] = $f;
+                            } else {
+                                if ($ayer) {
+                                    if ($f['fecha'] == $a->format('d/m/y')) {
+                                        $fs[] = $f;
+                                    }
+                                }
+                                if ($hoy) {
+                                    if ($f['fecha'] == $h->format('d/m/y')) {
+                                        $fs[] = $f;
+                                    }
+                                }
+                                if ($mañana) {
+                                    if ($f['fecha'] == $m->format('d/m/y')) {
+                                        $fs[] = $f;
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+
+            return $fs;
         }
-        
-        return $fs;
     }
 }

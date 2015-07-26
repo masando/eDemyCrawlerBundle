@@ -6,8 +6,26 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class eDemyCrawlerBundle extends Bundle
 {
-    public static function getBundleName()
+    public static function getBundleName($type = null)
     {
-        return 'eDemyCrawlerBundle';
+        if ($type == null) {
+
+            return 'eDemyCrawlerBundle';
+        } else {
+            if ($type == 'Simple') {
+
+                return 'Crawler';
+            } else {
+                if ($type == 'simple') {
+
+                    return 'crawler';
+                }
+            }
+        }
+    }
+
+    public static function eDemyBundle() {
+
+        return true;
     }
 }

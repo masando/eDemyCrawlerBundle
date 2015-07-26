@@ -24,7 +24,7 @@ class tCommand extends ContainerAwareCommand
             //->addOption('m', null, InputOption::VALUE_NONE, 'mañana')
             //->addOption('todos', null, InputOption::VALUE_NONE, 'todos los días')
             //->addOption('todas', null, InputOption::VALUE_NONE, 'todas las ciudades')
-            //->addOption('ciudad', null, InputOption::VALUE_REQUIRED, 'ciudad', '__CITY__')
+            ->addOption('ciudad', null, InputOption::VALUE_REQUIRED, 'ciudad', '__CITY__')
         ;
     }
 
@@ -33,26 +33,30 @@ class tCommand extends ContainerAwareCommand
         $this->output = $output;
         $this->input = $input;
         //$this->a = $this->input->getOption('a');
-        $this->t('__CITY__');
+        $this->ciudad = $this->input->getOption('ciudad');
+        $this->t($this->ciudad);
     }
     
-    protected function t($city = '__CITY__', $fecha = null) {
-        if($fecha == null) {
-            $fecha = new \DateTime('now');
+    protected function t($city = false, $fecha = null)
+    {
+        if($city) {
+            if ($fecha == null) {
+                $fecha = new \DateTime('now');
+            }
+            $fecha = $fecha->format('Y-m-d');
+
+            $this->tCrawler = $this->getContainer()->get('edemy.t_crawler');
+
+            $pp = $this->tCrawler->getPP($city, $fecha);
+            $ec = $this->tCrawler->getEC($city, $fecha);
+            $max = $this->tCrawler->getMax($city, $fecha);
+            $min = $this->tCrawler->getMin($city, $fecha);
+
+            $this->output->writeln("c: ".$city." - fecha: ".$fecha);
+            $this->output->writeln("pp: ".$pp);
+            $this->output->writeln("ec: ".$ec);
+            $this->output->writeln("max: ".$max);
+            $this->output->writeln("min: ".$min);
         }
-        $fecha = $fecha->format('Y-m-d');
-
-        $this->tCrawler = $this->getContainer()->get('edemy.t_crawler');
-
-        $pp = $this->tCrawler->getPP($city, $fecha);
-        $ec = $this->tCrawler->getEC($city, $fecha);
-        $max = $this->tCrawler->getMax($city, $fecha);
-        $min = $this->tCrawler->getMin($city, $fecha);
-
-        $this->output->writeln("c: " . $city . " - fecha: " . $fecha);
-        $this->output->writeln("pp: " . $pp);
-        $this->output->writeln("ec: " . $ec);
-        $this->output->writeln("max: " . $max);
-        $this->output->writeln("min: " . $min);
     }
 }

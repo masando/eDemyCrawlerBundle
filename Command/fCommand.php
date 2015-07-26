@@ -34,7 +34,8 @@ class fCommand extends ContainerAwareCommand
     {
         $this->count = 0;
         $this->subcount = 0;
-        $this->file = '';
+        $this->param = $this->getContainer()->get('edemy.param');
+        $this->file = $this->param->getParamP('f.source', 'eDemyCrawlerBundle');
         $this->output = $output;
         $this->input = $input;
         
@@ -46,7 +47,8 @@ class fCommand extends ContainerAwareCommand
         $this->todas = $this->input->getOption('todas');
 
         $this->fCrawler = $this->getContainer()->get('edemy.f_crawler');
-        $this->fs = $this->fCrawler->getF($this->ciudad, $this->todas, $this->a, $this->h, $this->m, $this->todos);
+        $this->fCrawler->load($this->file);
+        $this->fs = $this->fCrawler->getFs($this->ciudad, $this->todas, $this->a, $this->h, $this->m, $this->todos);
         foreach($this->fs as $f) {
             $this->output->writeln($f['fecha'] . ' - ' . $f['f'] . ' - ' . $f['direccion'] . ' - ' . $f['ciudad']);
         }
