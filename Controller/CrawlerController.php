@@ -23,10 +23,11 @@ class CrawlerController extends BaseController
 
     public function imageAction()
     {
-//        $hoy = $this->SpanishDate((new \DateTime('now'))->getTimeStamp());
+        $msg = $this->SpanishDate((new \DateTime('tomorrow'))->getTimeStamp()) . "\n";
+
         $city = $this->getParam('t.city', null, false);
         $logo = $this->getParam('f.logo');
-        $fecha = (new \DateTime('now'))->format('Y-m-d');
+        $fecha = (new \DateTime('tomorrow'))->format('Y-m-d');
         //$file = $this->getParam('f.source');
         $fCrawler = $this->get('edemy.f_crawler');
         $tCrawler = $this->get('edemy.t_crawler');
@@ -34,13 +35,12 @@ class CrawlerController extends BaseController
         if($city) {
             try {
                 $fCrawler->Load();
-                $f = $fCrawler->getFs($city)[0];
+                $f = $fCrawler->getFs($city, false, false, false, true)[0];
                 $msg_f = $this->getParam('f.msg');
                 $msg_f = preg_replace('/\$city/', $city, $msg_f);
                 $msg_f = preg_replace('/\$f\[f\]/', $f['f'], $msg_f);
                 $msg_f = preg_replace('/\$f\[direccion\]/', $f['direccion'], $msg_f);
                 $parts = explode('\\n', $msg_f);
-                $msg = "";
                 foreach($parts as $part) {
                     $msg .= $part . "\n";
                 }
