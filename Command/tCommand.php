@@ -34,6 +34,7 @@ class tCommand extends ContainerAwareCommand
         $this->input = $input;
         //$this->a = $this->input->getOption('a');
         $this->ciudad = $this->input->getOption('ciudad');
+        $this->getContainer()->get('translator')->setLocale('es');
         $this->t($this->ciudad);
     }
     
@@ -46,7 +47,8 @@ class tCommand extends ContainerAwareCommand
             $fecha = $fecha->format('Y-m-d');
 
             $this->tCrawler = $this->getContainer()->get('edemy.t_crawler');
-
+            $this->tCrawler->setTCrawler($fecha);
+            //$this->tCrawler->getTCrawler($city, $fecha);
             $pp = $this->tCrawler->getPP($city, $fecha);
             $ec = $this->tCrawler->getEC($city, $fecha);
             $max = $this->tCrawler->getMax($city, $fecha);

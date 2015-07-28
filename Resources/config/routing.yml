@@ -1,5 +1,4 @@
-edemy_crawler_imagick:
-    path:           /crawler/imagick
-    defaults:       { _controller: edemy.crawler:imagickAction }
+edemy_crawler_image:
+    path:           /crawler/image.jpg
+    defaults:       { _controller: edemy.crawler:imageAction }
     methods:        [ GET ]
-

@@ -21,51 +21,74 @@ class CrawlerController extends BaseController
         
     }
 
-    public function imagickAction()
+    public function imageAction()
     {
-        try
-        {
-            $hoy = $this->SpanishDate((new \DateTime('now'))->getTimeStamp());
-            $f = $this->get('edemy.f_crawler')->getFs()[0];
-            $mensaje = '__MSG1__';
-            $mensaje .= "\n" . $f['f'] . " en " .  $f['direccion'];
-            $f = $this->get('edemy.f_crawler')->getFs('__CITY__')[0];
-            $mensaje .= '__MSG2__';
-            $mensaje .= "\n" . $f['f'] . " en " . $f['direccion'];
-            $fecha = (new \DateTime('now'))->format('Y-m-d');
-            $tCrawler = $this->get('edemy.t_crawler');
-            $pp = $tCrawler->getPP('__CITY__', $fecha);
-            $mensaje .= '__MSG3__';
-            $ec = $tCrawler->getEC('__CITY__', $fecha);
-            $mensaje .= "\nEC: " . $ec;
-            $min = $tCrawler->getMin('__CITY__', $fecha);
-            $max = $tCrawler->getMax('__CITY__', $fecha);
-            $mensaje .= '__MSG4__';
+//        $hoy = $this->SpanishDate((new \DateTime('now'))->getTimeStamp());
+        $city = $this->getParam('t.city', null, false);
+        $logo = $this->getParam('f.logo');
+        $fecha = (new \DateTime('now'))->format('Y-m-d');
+        //$file = $this->getParam('f.source');
+        $fCrawler = $this->get('edemy.f_crawler');
+        $tCrawler = $this->get('edemy.t_crawler');
 
-            $imagick = new \Imagick();
-            $imagick->setResourceLimit(\Imagick::RESOURCETYPE_MEMORY, 8);
-            $imagick->newImage(698, 698, new \ImagickPixel("white"));
-            $imagick->setImageFormat( "jpg" );
+        if($city) {
+            try {
+                $fCrawler->Load();
+                $f = $fCrawler->getFs($city)[0];
+                $msg_f = $this->getParam('f.msg');
+                $msg_f = preg_replace('/\$city/', $city, $msg_f);
+                $msg_f = preg_replace('/\$f\[f\]/', $f['f'], $msg_f);
+                $msg_f = preg_replace('/\$f\[direccion\]/', $f['direccion'], $msg_f);
+                $parts = explode('\\n', $msg_f);
+                $msg = "";
+                foreach($parts as $part) {
+                    $msg .= $part . "\n";
+                }
 
-            //$ellipse = $this->getEllipse(200, 100, 50, 50, 0, 360, "orange");
-            //$im->drawImage($ellipse);
+                $tCrawler->setTCrawler($fecha);
+                $msg_t = $this->getParam('t.msg');
+                $pp = $tCrawler->getPP($city, $fecha);
+                $ec = $tCrawler->getEC($city, $fecha);
+                $min = $tCrawler->getMin($city, $fecha);
+                $max = $tCrawler->getMax($city, $fecha);
 
-            $text = $this->annotateImage($mensaje, 20, 230);
-            $imagick->drawImage($text);
+                $msg_t = preg_replace('/\$city/', $city, $msg_t);
+                $msg_t = preg_replace('/\$pp/', $pp, $msg_t);
+                $msg_t = preg_replace('/\$min/', $min, $msg_t);
+                $msg_t = preg_replace('/\$max/', $max, $msg_t);
 
+                $parts = explode('\\n', $msg_t);
+                foreach($parts as $part) {
+                    $msg .= $part . "\n";
+                }
 
-            $logo = new \Imagick('__LOGO__');
-            $imagick->addImage($logo);
-            $imagick = $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_COMPOSITE);
-        } catch(Exception $e) {
-            echo $e->getMessage();
+                $imagick = new \Imagick();
+                $imagick->setResourceLimit(\Imagick::RESOURCETYPE_MEMORY, 8);
+                $imagick->newImage(698, 698, new \ImagickPixel("white"));
+                $imagick->setImageFormat("png");
+
+                //$ellipse = $this->getEllipse(200, 100, 50, 50, 0, 360, "orange");
+                //$im->drawImage($ellipse);
+
+                if($logo) {
+                    $mylogo = new \Imagick($logo);
+                    $imagick->addImage($mylogo);
+                    $imagick = $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_COMPOSITE);
+                }
+
+                $text = $this->annotateImage($msg, 1, 130);
+                $imagick->drawImage($text);
+
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
+            $imagick->trimImage(10);
+            $imagick->borderImage('white', 20, 20);
+            $response = new Response($imagick, Response::HTTP_OK);
+            $response->headers->set('Content-Type', 'image/png');
+
+            return $response;
         }
-        $imagick->trimImage(10);
-        $imagick->borderImage('white', 0, 20);
-        $response = new Response($imagick, Response::HTTP_OK);
-        $response->headers->set('Content-Type', 'image/png');
-
-        return $response;
     }
 
     public function annotateImage($text, $x = 0, $y = 0, $spacing = 25) {

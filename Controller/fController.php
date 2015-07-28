@@ -7,39 +7,42 @@ use eDemy\MainBundle\Event\ContentEvent;
 
 class fController extends BaseController
 {
-    protected $file;
     protected $fs;
 
     public static function getSubscribedEvents()
     {
-        return self::getSubscriptions('f', [], array(
-        ));
+        return self::getSubscriptions('f', [], array());
     }
 
-    public function __construct()
-    {
-        parent::__construct();
+    public function afterSetEventDispatcher() {
+        $this->file = $this->getParam('f.source');
+
+        return true;
     }
 
-    public function load($file)
+    public function load($file = null)
     {
-        $this->file = $file;
-        $this->todasFs = array();
-        
-        if (($handle = fopen($this->file, "r")) !== FALSE) {
-            $i = 0;
-            while (($data = fgetcsv($handle, null, ";")) !== FALSE) {
-                try {
-                    $this->todasFs[$i]['fecha'] = $data[0];
-                    $f = explode(',', $data[5]);
-                    $this->todasFs[$i]['f'] = trim($f[1] . ' ' . $f[0]);
-                    $this->todasFs[$i]['direccion'] = trim(utf8_encode($data[6]));
-                    $this->todasFs[$i]['ciudad'] = strtolower($data[7]);
-                } catch(\Exception $e) {
+        if($file == null) {
+            $file = $this->file;
+        }
+        if($file) {
+            $this->todasFs = array();
+
+            if (($handle = fopen($file, "r")) !== false) {
+                $i = 0;
+                while (($data = fgetcsv($handle, null, ";")) !== false) {
+                    try {
+                        $this->todasFs[$i]['fecha'] = $data[0];
+                        $f = explode(',', $data[5]);
+                        $this->todasFs[$i]['f'] = trim($f[1].' '.$f[0]);
+                        $this->todasFs[$i]['direccion'] = trim(utf8_encode($data[6]));
+                        $this->todasFs[$i]['ciudad'] = strtolower($data[7]);
+                    } catch (\Exception $e) {
+                    }
+                    $i++;
                 }
-                $i++;
+                fclose($handle);
             }
-            fclose($handle);
         }
     }
 
