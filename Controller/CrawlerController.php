@@ -26,7 +26,7 @@ class CrawlerController extends BaseController
 
     public function onFrontpage(ContentEvent $event)
     {
-        $this->get('edemy.meta')->setTitlePrefix("Crawler");
+        //$this->get('edemy.meta')->setTitlePrefix("Crawler");
         $params = $this->getParam('crawler.frontpage_module', null, null, null, true);
 
         if(count($params) == 1) {
