@@ -1,4 +1,20 @@
 edemy_crawler_image:
-    path:           /crawler/image.jpg
+    path:           /crawler/image/{param}
     defaults:       { _controller: edemy.crawler:imageAction }
     methods:        [ GET ]
+
+edemy_crawler_through:
+    path:           /crawler/through/{param}
+    defaults:       { _controller: edemy.crawler:throughAction }
+    methods:        [ GET ]
+
+edemy_crawler_process:
+    path:           /crawler/process/{param}
+    defaults:       { _controller: edemy.crawler:processAction }
+    methods:        [ GET ]
+
+edemy_crawler_onprocess:
+    path:           /{_locale}/crawler/onprocess/{param}
+    defaults:       { _controller: edemy.main:indexAction }
+    methods:        [ GET ]
+    requirements:   { _locale: es|en, id: \d+ }

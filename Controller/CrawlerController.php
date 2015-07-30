@@ -3,6 +3,8 @@
 namespace eDemy\CrawlerBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Process\Process;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 use eDemy\MainBundle\Controller\BaseController;
 use eDemy\MainBundle\Event\ContentEvent;
@@ -12,6 +14,7 @@ class CrawlerController extends BaseController
     public static function getSubscribedEvents()
     {
         return self::getSubscriptions('crawler', [], array(
+            'edemy_crawler_onprocess' => array('onCrawlerProcess', 0),
         ));
     }
 
@@ -21,7 +24,52 @@ class CrawlerController extends BaseController
         
     }
 
-    public function imageAction()
+    public function onFrontpage(ContentEvent $event)
+    {
+        $this->get('edemy.meta')->setTitlePrefix("Crawler");
+        $params = $this->getParam('crawler.frontpage_module', null, null, null, true);
+
+        if(count($params) == 1) {
+            $modules[] = $params;
+        } else {
+            $modules = $params;
+        }
+        foreach($modules as $module) {
+            $params = array();
+            if($module->getDescription() != null) {
+                $params = json_decode($module->getDescription(), true);
+            }
+
+            $e = new GenericEvent("module");
+            $e->setArguments($params);
+            $e->setArgument('content', null);
+
+            $this->get('event_dispatcher')->dispatch($module->getValue(), $e);
+        }
+
+        $this->addEventModule($event, 'templates/crawler/frontpage', array(
+            'content' => $e->getArgument('content'),
+            //'entities' => $this->getRepository($event->getRoute())->findAllOrdered($this->getNamespace()),
+        ));
+
+    }
+
+    public function onCrawlerProcess(GenericEvent $event) {
+        $param = $event->getArgument('param');
+        $proc = $this->getParam($param, null, null, null, true);
+        $process = new Process($proc);
+        $process->run();
+
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getErrorOutput());
+        }
+
+        $event->setArgument('content', $event->getArgument('content') . $process->getOutput());
+        //$this->addEventModule($event, null, $process->getOutput());
+    }
+
+    public function imageAction($param)
     {
         $msg = $this->SpanishDate((new \DateTime('tomorrow'))->getTimeStamp()) . "\n";
 
@@ -135,5 +183,26 @@ class CrawlerController extends BaseController
        $mesesN=array(1=>"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio",
                  "Agosto","Septiembre","Octubre","Noviembre","Diciembre");
        return $diassemanaN[$diasemana]." $dia de ". $mesesN[$mes];
-    } 
+    }
+
+    public function throughAction($param) {
+        $param = $this->getParam($param, null, null, null, true);
+        //$content = "<script>" . file_get_contents($param) . "</script>";
+
+        return $this->newResponse($param->getDescription());
+    }
+
+    public function processAction($param) {
+        $proc = $this->getParam($param, null, null, null, true);
+        $process = new Process($proc);
+        $process->run();
+
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getErrorOutput());
+        }
+
+        return $this->newResponse($process->getOutput());
+        //echo $process->getOutput();
+    }
 }
