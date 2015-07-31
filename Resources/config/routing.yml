@@ -1,6 +1,6 @@
 edemy_crawler_image:
     path:           /crawler/image/{param}
-    defaults:       { _controller: edemy.crawler:imageAction }
+    defaults:       { _controller: edemy.crawler:imageAction, param: 1 }
     methods:        [ GET ]
 
 edemy_crawler_through:
