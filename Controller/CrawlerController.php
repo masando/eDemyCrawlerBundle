@@ -64,6 +64,7 @@ class CrawlerController extends BaseController
         if (!$process->isSuccessful()) {
             throw new \RuntimeException($process->getErrorOutput());
         }
+        //die(var_dump($process->getOutput()));
 
         $event->setArgument('content', $event->getArgument('content') . $process->getOutput());
         //$this->addEventModule($event, null, $process->getOutput());
